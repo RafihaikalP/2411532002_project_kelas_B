@@ -1,103 +1,164 @@
 package ui;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-import java.awt.Font;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import java.awt.*;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-
 import Model.User;
+import service1.LoginService;
+import util1.ValidationUtil1;
+import error1.ValidationException1;
 
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JButton;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.LayoutStyle.ComponentPlacement;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 public class LoginFrame extends JFrame {
 
-	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
-	private JTextField txtUsername;
-	private JTextField txtPassword;
+    private static final long serialVersionUID = 1L;
+    private JPanel contentPane;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					LoginFrame frame = new LoginFrame();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+    public JTextField txtUsername;
+    public JTextField txtPassword;
+    public JButton btnLogin;
 
-	/**
-	 * Create the frame.
-	 */
-	public LoginFrame() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 319, 345);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+    public static void main(String[] args) {
+        EventQueue.invokeLater(() -> {
+            try {
+                LoginFrame frame = new LoginFrame();
+                frame.setVisible(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
 
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
-		
-		JLabel lblNewLabel = new JLabel("Laundry Apps");
-		lblNewLabel.setFont(new Font("Comic Sans MS", Font.BOLD, 24));
-		lblNewLabel.setBounds(10, 11, 176, 40);
-		contentPane.add(lblNewLabel);
-		
-		JLabel lblNewLabel_1 = new JLabel("Anda Sibuk? Biar Kami Yang Urus Cucian");
-		lblNewLabel_1.setFont(new Font("Comic Sans MS", Font.BOLD, 14));
-		lblNewLabel_1.setBounds(10, 62, 285, 14);
-		contentPane.add(lblNewLabel_1);
-		
-		txtUsername = new JTextField();
-		txtUsername.setBounds(10, 112, 285, 31);
-		contentPane.add(txtUsername);
-		txtUsername.setColumns(10);
-		
-		txtPassword = new JTextField();
-		txtPassword.setBounds(10, 175, 285, 31);
-		contentPane.add(txtPassword);
-		txtPassword.setColumns(10);
-		
-		JLabel lblNewLabel_2 = new JLabel("Username");
-		lblNewLabel_2.setBounds(10, 87, 78, 14);
-		contentPane.add(lblNewLabel_2);
-		
-		JLabel lblNewLabel_3 = new JLabel("Password");
-		lblNewLabel_3.setBounds(10, 154, 78, 14);
-		contentPane.add(lblNewLabel_3);
-		
-		JButton btnLogin = new JButton("Login");
-		btnLogin.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				btnLogin.addActionListener(new ActionListener() {
-				    public void actionPerformed(ActionEvent e) {
-				        if(User.login(txtUsername.getText(), txtPassword.getText())) {
-				            new MainFrame().setVisible(true);
-				            dispose();
-				        } else {
-				            JOptionPane.showMessageDialog(null, "Login Gagal");
-				        }
-				    }
-				});
+    public LoginFrame() {
+        setTitle("Laundry Apps");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(420, 400);              
+        setLocationRelativeTo(null);  
+        setResizable(false);
 
-			}
-		});
-		btnLogin.setBounds(25, 230, 252, 31);
-		contentPane.add(btnLogin);
-		
-	}
+        contentPane = new JPanel();
+        contentPane.setBorder(new EmptyBorder(30, 40, 30, 40));
+        contentPane.setBackground(new Color(230, 230, 230)); 
+        setContentPane(contentPane);
+
+        // Judul
+        JLabel lblTitle = new JLabel("Laundry Apps");
+        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 26));
+        lblTitle.setForeground(Color.BLACK);
+
+        JLabel lblSubtitle = new JLabel("Males aja nyuci, biar kami cuciin");
+        lblSubtitle.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        lblSubtitle.setForeground(new Color(100, 100, 100));
+
+        // Username
+        JLabel lblUsername = new JLabel("Username");
+        lblUsername.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        lblUsername.setForeground(Color.BLACK);
+        
+        txtUsername = new JTextField();
+        txtUsername.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        txtUsername.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(180, 180, 180), 1),
+            BorderFactory.createEmptyBorder(8, 8, 8, 8)
+        ));
+        txtUsername.setBackground(Color.WHITE);
+        txtUsername.setColumns(10);
+
+        // Password
+        JLabel lblPassword = new JLabel("Password");
+        lblPassword.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        lblPassword.setForeground(Color.BLACK);
+        
+        txtPassword = new JTextField();
+        txtPassword.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        txtPassword.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(180, 180, 180), 1),
+            BorderFactory.createEmptyBorder(8, 8, 8, 8)
+        ));
+        txtPassword.setBackground(Color.WHITE);
+        txtPassword.setColumns(10);
+
+        // Tombol Login
+        btnLogin = new JButton("Login");
+        btnLogin.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String userValue = txtUsername.getText();
+                String passValue = txtPassword.getText();
+
+                // Membuat objek user
+                User user = new User(userValue, passValue);
+
+                try {
+                    ValidationUtil1.validate(user);
+                    LoginService loginService = new LoginService();
+                    if (loginService.authenticate(user)) {
+                        System.out.println("Login successful!");
+                        new MainFrame().setVisible(true);
+                        dispose();
+                    } else {
+                        System.out.println("Invalid username or password.");
+                        JOptionPane.showMessageDialog(null, "Login Gagal, Invalid username or password.");
+                    }
+                } 
+                catch (ValidationException1 | NullPointerException exception) {
+                    System.out.println("Data tidak valid " + exception.getMessage());
+                    JOptionPane.showMessageDialog(null, "Login Gagal: " + exception.getMessage());
+                } 
+                finally {
+                    System.out.println("Selalu di eksekusi");
+                }
+            }
+        });
+
+        btnLogin.setBackground(new Color(190, 190, 190)); 
+        btnLogin.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        btnLogin.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(150, 150, 150), 1),
+            BorderFactory.createEmptyBorder(10, 10, 10, 10)
+        ));
+        btnLogin.setFocusPainted(false);
+
+        GroupLayout gl = new GroupLayout(contentPane);
+        gl.setHorizontalGroup(
+        	gl.createParallelGroup(Alignment.LEADING)
+        		.addGroup(gl.createSequentialGroup()
+        			.addGroup(gl.createParallelGroup(Alignment.LEADING)
+        				.addComponent(lblTitle)
+        				.addComponent(lblSubtitle)
+        				.addComponent(lblUsername)
+        				.addComponent(txtUsername, GroupLayout.PREFERRED_SIZE, 320, GroupLayout.PREFERRED_SIZE)
+        				.addComponent(lblPassword)
+        				.addComponent(btnLogin, GroupLayout.PREFERRED_SIZE, 320, GroupLayout.PREFERRED_SIZE)
+        				.addComponent(txtPassword, GroupLayout.PREFERRED_SIZE, 320, GroupLayout.PREFERRED_SIZE))
+        			.addGap(20))
+        );
+        gl.setVerticalGroup(
+        	gl.createParallelGroup(Alignment.LEADING)
+        		.addGroup(gl.createSequentialGroup()
+        			.addContainerGap()
+        			.addComponent(lblTitle)
+        			.addPreferredGap(ComponentPlacement.RELATED)
+        			.addComponent(lblSubtitle)
+        			.addGap(18)
+        			.addComponent(lblUsername)
+        			.addPreferredGap(ComponentPlacement.RELATED)
+        			.addComponent(txtUsername, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
+        			.addGap(18)
+        			.addComponent(lblPassword)
+        			.addPreferredGap(ComponentPlacement.RELATED)
+        			.addComponent(txtPassword, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
+        			.addGap(37)
+        			.addComponent(btnLogin, GroupLayout.PREFERRED_SIZE, 47, GroupLayout.PREFERRED_SIZE)
+        			.addGap(27))
+        );
+        contentPane.setLayout(gl);
+
+        gl.setAutoCreateGaps(false);
+        gl.setAutoCreateContainerGaps(false);
+    }
 }

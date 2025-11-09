@@ -1,16 +1,16 @@
 package Model;
 
 public class Service {
-	    private int id;
+	    private String id;
 	    private String jenis;
 	    private double harga;
 	    private String status;
 
-	    public int getId() {
+	    public String getId() {
 	        return id;
 	    }
-	    public void setId(int id) {
-	        this.id = id;
+	    public void setId(String string) {
+	        this.id = string;
 	    }
 
 	    public String getJenis() {
@@ -49,6 +49,20 @@ public class Service {
             + " Status: " + ser.getStatus());
 	        
 		}
+	}
+
+
+	public void setId(int i) {
+		
+		
+	}
+	public String getNama() {
+	
+		return null;
+	}
+	public void setNama(String string) {
+		
+		
 	}
 
 }			

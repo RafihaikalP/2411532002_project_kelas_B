@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import Model.User;
-import util.Database;
+import config.Database;
 
 public class UserRepo implements UserDAO {
 
@@ -23,7 +23,7 @@ public class UserRepo implements UserDAO {
 
     @Override
     public void save(User user) {
-        // Menggunakan try-with-resources agar PreparedStatement otomatis ditutup
+
         try (PreparedStatement st = connection.prepareStatement(INSERT)) {
             st.setString(1, user.getNama());
             st.setString(2, user.getUsername());
@@ -37,12 +37,12 @@ public class UserRepo implements UserDAO {
     @Override
     public List<User> show() {
         List<User> userList = new ArrayList<>();
-        // Statement dan ResultSet otomatis ditutup
+     
         try (Statement st = connection.createStatement();
              ResultSet rs = st.executeQuery(SELECT)) {
             
             while (rs.next()) {
-                User user = new User();
+                User user = new User(null, null);
                 user.setId(rs.getString("id"));
                 user.setNama(rs.getString("name"));
                 user.setUsername(rs.getString("username"));
@@ -77,4 +77,70 @@ public class UserRepo implements UserDAO {
             e.printStackTrace();
         }
     }
+
+
+public boolean isUsernameExist(String username) {
+    String query = "SELECT COUNT(*) FROM user WHERE username = ?";
+    try (PreparedStatement st = connection.prepareStatement(query)) {
+        st.setString(1, username);
+        ResultSet rs = st.executeQuery();
+        if (rs.next()) {
+            return rs.getInt(1) > 0;
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return false;
+}
+
+public boolean isPasswordExist(String password) {
+    String query = "SELECT COUNT(*) FROM user WHERE password = ?";
+    try (PreparedStatement st = connection.prepareStatement(query)) {
+        st.setString(1, password);
+        ResultSet rs = st.executeQuery();
+        if (rs.next()) {
+            return rs.getInt(1) > 0;
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return false;
+}
+
+
+public boolean isUsernameExist(String username, String excludeId) {
+    String query = "SELECT COUNT(*) FROM user WHERE username = ? AND id != ?";
+    try (PreparedStatement st = connection.prepareStatement(query)) {
+        st.setString(1, username);
+        st.setString(2, excludeId);
+        ResultSet rs = st.executeQuery();
+        if (rs.next()) {
+            return rs.getInt(1) > 0;
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return false;
+}
+
+public boolean isPasswordExist(String password, String excludeId) {
+    String query = "SELECT COUNT(*) FROM user WHERE password = ? AND id != ?";
+    try (PreparedStatement st = connection.prepareStatement(query)) {
+        st.setString(1, password);
+        st.setString(2, excludeId);
+        ResultSet rs = st.executeQuery();
+        if (rs.next()) {
+            return rs.getInt(1) > 0;
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return false;
+}
+
+
+
+
+
+
 }

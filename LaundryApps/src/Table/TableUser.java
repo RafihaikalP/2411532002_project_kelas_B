@@ -8,7 +8,7 @@ import java.util.List;
 
 public class TableUser extends AbstractTableModel {
     private List<Model.User> ls;
-    private String[] columnNames = {"ID", "Name", "Username", "Password"};
+    private String[] columnNames = {"id", "Name", "Username", "Password"};
 
     public TableUser(List<Model.User> ls) {
         this.ls = ls;

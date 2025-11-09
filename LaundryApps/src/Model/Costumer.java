@@ -1,16 +1,16 @@
 package Model;
 
 public class Costumer {
-    private int id;
+    private String id;
     private String nama;
     private String alamat;
     private String noHp;
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String string) {
         this.id = id;
     }
 
@@ -52,4 +52,15 @@ public class Costumer {
                            " No HP = " + cos.getNoHp());
     }
 	}
+
+	public void setId(int i) {
+	
+		
+	}
+
+	
+
+		
+	
 }
+
